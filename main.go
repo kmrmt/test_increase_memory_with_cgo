@@ -1,9 +1,8 @@
 package main
 
 // #cgo LDFLAGS: -L. -ltest -lstdc++
-// #include "test.h"
+// #include "c.h"
 import "C"
-import "runtime"
 
 func main() {
 	const (
@@ -18,21 +17,17 @@ func main() {
 		vectors[i*dim] = float32(i)
 	}
 
-	pinner := &runtime.Pinner{}
+	o := C.or_init()
 	for n := 0; n < 100; n++ {
 		ids := make([]C.size_t, size)
 		C.stat(C.CString("init"))
 		for i := 0; i < size; i++ {
-			ptr := &vectors[i*dim]
-			pinner.Pin(ptr)
-			ids[i] = C.insert((*C.float)(ptr), C.size_t(dim))
-			pinner.Unpin()
-
+			ids[i] = C.or_insert(o, (*C.float)(&vectors[i*dim]), C.size_t(dim))
 		}
 		C.stat(C.CString("insert"))
 
 		for i := 0; i < size; i++ {
-			C.remove_(ids[i])
+			C.or_remove(o, ids[i])
 		}
 		C.stat(C.CString("remove"))
 	}

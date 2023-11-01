@@ -1,3 +1,8 @@
 *.o
 *.a
 main
+
+
+# Added by cargo
+
+/target

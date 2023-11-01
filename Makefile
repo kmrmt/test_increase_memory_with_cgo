@@ -5,9 +5,9 @@ SRCS := $(wildcard *.cpp)
 OBJS := $(SRCS:.cpp=.o)
 
 CC := gcc
-CFLAGS := -g -Wall -O2 -L.
+CFLAGS := -fPIC -g -Wall -O2 -L.
 CXX := g++
-CXXFLAGS := -g -Wall -O2
+CXXFLAGS := -fPIC -g -Wall -O2 -std=c++20
 AR := ar
 
 all: lib bin
@@ -35,4 +35,7 @@ runc: $(BIN)
 rungo: $(LIB)
 	go run main.go
 
-runall: runc rungo
+runrust: $(LIB)
+	cargo run
+
+runall: runc rungo runrust
